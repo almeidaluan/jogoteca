@@ -23,6 +23,8 @@ def listaJogos():
 
 @app.route("/novo")
 def novoJogo():
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect('/login?proxima-page=novo')
     return render_template('novo.html',titulo="Novo Jogo")
 
 @app.route("/criar",methods=['POST',])
@@ -36,14 +38,16 @@ def criarJogo():
 
 @app.route("/login")
 def login():
-    return render_template('login.html')
+    proxima = request.args.get('proxima-page')
+    return render_template('login.html', proxima=proxima)
 
 @app.route("/autenticar",methods=['POST',])
 def autenticar():
     if 'mestra' == request.form['senha']:
          session['usuario_logado'] = request.form['usuario']
          flash(request.form['usuario'] + 'logado com sucesso')
-         return redirect("/")
+         proxima_page = request.form['proxima']
+         return redirect("/{}".format(proxima_page))
     else:
          flash('Nao foi possivel se logar no sistema,tente novamente ou aguarde alguns minutos')
          return redirect("/login")
