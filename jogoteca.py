@@ -49,7 +49,10 @@ def autenticar():
          return redirect("/login")
 
 
-
-
+@app.route('/logout')
+def deslogar():
+    session['usuario_logado'] = None
+    flash('Usuario Deslogado')
+    return redirect('/')
 
 app.run(port=8081) #host='0.0.0.0',port=8080
