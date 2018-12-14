@@ -1,7 +1,7 @@
-from flask import Flask,render_template,request,redirect
+from flask import Flask,render_template,request,redirect,session,flash
 
 app = Flask(__name__)
-
+app.secret_key = 'caelum'
 
 class Jogo:
     def __init__(self,nome,categoria,console):
@@ -33,5 +33,23 @@ def criarJogo():
     jogo = Jogo(nome,categoria,console)
     lista.append(jogo)
     return redirect('/')
+
+@app.route("/login")
+def login():
+    return render_template('login.html')
+
+@app.route("/autenticar",methods=['POST',])
+def autenticar():
+    if 'mestra' == request.form['senha']:
+         session['usuario_logado'] = request.form['usuario']
+         flash(request.form['usuario'] + 'logado com sucesso')
+         return redirect("/")
+    else:
+         flash('Nao foi possivel se logar no sistema,tente novamente ou aguarde alguns minutos')
+         return redirect("/login")
+
+
+
+
 
 app.run(port=8081) #host='0.0.0.0',port=8080
